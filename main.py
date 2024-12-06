@@ -5,7 +5,7 @@ db = sqlite3.connect('university.db')
 
 cursor = db.cursor()
 
-# 1 add student; 2 show the list of students, 3 add course; 4 show the list of course; 5 update student info; 6 update course info
+# 1 add student; 2 show the list of students, 3 add course; 4 show the list of course; 5 update student info; 6 update course info; 7 select students for the course
 choice = input('Оберіть дію')
 
 #cursor.execute("""CREATE TABLE students (
@@ -57,19 +57,27 @@ elif choice == '5':
     age_student = input("Новий вік студента")
     major_student = input("Новий major студента")
     cursor.execute("UPDATE students "
-                   "SET (id, name, age, courses) "
-                   "WHERE id = id_2")
+    "SET (id, name, age, courses) "
+    "VALUES (?, ?, ?, ?)",
+    (id, name_student, age_student, major_student),
+    "WHERE id = 0")
+
 elif choice == '6':
     id_2 = input('Введіть id курса, інформацію якого треба змінити')
     id_cours = input("Новий id ¯\_(ツ)_/¯")
     name_cours = input("Нове ім'я курса")
     instructor_cours = input("Нове ім'я інструктора курса")
-    cursor.execute("UPDATE students "
-                   "SET (course_id, course_name, instructor) "
-                   "WHERE id_cours = id_2")
+    cursor.execute("UPDATE courses "
+    "SET (course_id, course_name, instructor ) "
+    "VALUES (?, ?, ?, ?)",
+    (id_cours, name_cours, instructor_cours),
+    "WHERE id = 1")
+
+elif choice == '7':
+    select_courses = input('По якому курсу треба знайти студентів?')
+    cursor.execute("SELECT id, name, age FROM students WHERE courses = select_courses")
+    print(cursor.fetchall())
 
 db.commit()
 
 db.close()
-
-
